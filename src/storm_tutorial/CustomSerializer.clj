@@ -14,7 +14,7 @@
 (def ISO-DATE-TIME-FORMATTER (formatters :date-time))
 
 (defn- serialize-date-time [^DateTime dt]
-  (-> (unparse ISO-DATE-TIME-FORMATTER dt)
+  (-> ^String (unparse ISO-DATE-TIME-FORMATTER dt)
       .getBytes))
 
 (def DATE-TIME-LENGTH (count (serialize-date-time (now))))
