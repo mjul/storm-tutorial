@@ -5,7 +5,7 @@ Demonstrates realtime stream processing with the [Storm](https://github.com/nath
 This tutorial shows a simple financial application:
 
 * The data source ("spout" in Storm parlance) is a price feed with live price data for a set of financial instruments.
-* The data is consumed by candlestick chart generators sampling it an collecting min/max and open/close data.
+* The data is consumed by candlestick chart generators sampling it and collecting min/max and open/close data.
 
 The tutorial demonstrates:
 
