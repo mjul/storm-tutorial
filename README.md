@@ -3,12 +3,14 @@
 Demonstrates realtime stream processing with the [Storm](https://github.com/nathanmarz/storm) framework.
 
 This tutorial shows a simple financial application:
-* The data source ("sprout" in Storm parlance) is a price feed with live price data for a set of financial instruments.
+
+* The data source ("spout" in Storm parlance) is a price feed with live price data for a set of financial instruments.
 * The data is consumed by candlestick chart generators sampling it an collecting min/max and open/close data.
 
-The tutorial demonstrates
-* Sprouts, the data sources
-* Bolts, the functions to consume and transform data
+The tutorial demonstrates:
+
+* Spouts, the data sources.
+* Bolts, the functions to consume and transform data.
 * Topology, setting up the data stream flow.
 * How to add custom serialization formats for new data types.
 

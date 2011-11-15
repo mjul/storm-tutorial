@@ -20,13 +20,13 @@
 (defn price-feed
   "Produce a random walk sequence of price structures,
    beginning a time t1 with the interval in between the timestamps.
-   To keep the tutorial simple, we publish mid-prices not separate value for bid and ask."
+   To keep the tutorial simple, we publish mid-prices not separate values for bid and ask."
   [initial step t1 interval]
   (for [mid (random-walk initial step)
         t (iterate #(plus % interval) t1)]
     {:time t, :mid mid}))
   
-;; TODO: extract generalized seq-sprout 
+;; TODO: extract generalized seq-spout 
 
 ;; Spouts are the data sources for our tuple streams
 (defspout price-feed-spout ["symbol" "t" "mid"]
@@ -82,20 +82,15 @@
      (execute [tuple]
               (let [t1 (date-time 2011 10 14)
                     t2 (plus t1 duration)
-                    sym (.getString tuple 0) 
-                    t (.getValue tuple 1) 
-                    mid (.getDouble tuple 2) 
+                    sym (.getStringByField tuple "symbol") 
+                    t (.getValueByField tuple "t") 
+                    mid (.getDoubleByField tuple "mid") 
                     before (get-sample @samples t1 t2)
                     after (-> (swap! samples add-sample t1 t2 t sym mid)
                               (get-sample t1 t2))]
                 (if (not= before after)
                   (emit-bolt! collector [sym t1 "duration" (:min after) (:max after) "open" "close"]))
                 (ack! collector tuple))))))
-
-;; There is another way to get fields in the upcoming Storm v.0.5.4
-;; (.getStringByField tuple "symbol")
-;; (.getValueByField tuple "t")
-;; (.getDoubleByField tuple "mid")
 
 (defn inc-count
   "Increment the count for the symbol."
@@ -109,7 +104,7 @@
   (let [counts (atom {})]
     (bolt
      (execute [tuple]
-              (let [sym (.getString tuple 0)] 
+              (let [sym (.getStringByField tuple "symbol")] 
                 (swap! counts inc-count sym)
                 (emit-bolt! collector [sym (get @counts sym)])
                 (ack! collector tuple))))))
