@@ -29,13 +29,15 @@
 ;; TODO: extract generalized seq-spout 
 
 ;; Spouts are the data sources for our tuple streams
+;; This one outputs a tuple with three values: symbol, t and mid.
 (defspout price-feed-spout ["symbol" "t" "mid"]
   [conf context collector]
   (let [start-time (date-time 2011 10 17)
         interval (millis 100)
         sleep-time-ms (-> interval .toStandardDuration .getMillis)
         prices (atom (price-feed 1.3878 0.00001 start-time interval))]
-    ;; spout is a macro that reifies the ISpout interface. It has the operations open, close, nextTuple, ack, and fail.
+    ;; spout is a macro that reifies the ISpout interface.
+    ;; It has the operations open, close, nextTuple, ack, and fail.
     (spout
      ;; nextTuple should emit the next tuple in the data stream
      (nextTuple []
@@ -78,6 +80,8 @@
   [conf context collector]
   (let [samples (atom {})
         duration (minutes 1)]
+    ;; The bolt macro reifies the IBolt interface which has three methods:
+    ;; prepare, cleanup and execute.
     (bolt
      (execute [tuple]
               (let [t1 (date-time 2011 10 14)
@@ -91,6 +95,11 @@
                 (if (not= before after)
                   (emit-bolt! collector [sym t1 "duration" (:min after) (:max after) "open" "close"]))
                 (ack! collector tuple))))))
+
+;; TODO:
+;; 1) fn to map tuple -> hashmap 
+;; 2) impl :keyword lookup på tuple eller multimethod med type
+;; 3) tuple destructuring macro w/ types
 
 (defn inc-count
   "Increment the count for the symbol."
